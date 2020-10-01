@@ -17,13 +17,13 @@ const Item = ({active, item, onUpdate, index}) => {
     Animated.timing(colorToggle, {
       toValue: active ? 1 : 0,
       duration: 100,
-      delay: 200,
+      useNativeDriver: false,
     }).start();
   }, [active]);
 
-  if (active) {
-    console.log('ACTIVE', index);
-  }
+  // if (active) {
+  //   console.log('ACTIVE', index);
+  // }
   return (
     <View style={styles.item}>
       <TouchableOpacity onPress={() => onUpdate(index)}>

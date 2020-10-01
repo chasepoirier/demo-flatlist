@@ -1,57 +1,47 @@
-import React from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import React, {useRef} from 'react';
+import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
 import DATA from './data';
 import Item from './Item';
 
 const ITEM_HEIGHT = 45;
 
-const Picker = ({onChange}) => {
+const AndroidPicker = ({onChange, initialIndex}) => {
   const flatlistRef = React.useRef();
 
-  const [y, setY] = React.useState(0);
+  const [activeIndex, setActiveIndex] = React.useState(2);
 
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(2);
 
   const onMomentEnd = (e) => {
-    // setY(e.nativeEvent.contentOffset.y);
-    // setLifecycle({
-    //   completed: true,
-    //   hasMoment: false,
-    //   state: 'MOMENT_END',
-    // });
-  };
-
-  const onDragEnd = (e) => {
-    setY(e.nativeEvent.contentOffset.y);
-  };
-
-  React.useEffect(() => {
-    const index = Math.floor(y / ITEM_HEIGHT);
+    const currentY = e.nativeEvent.contentOffset.y;
+    const index = Math.round(currentY / ITEM_HEIGHT);
 
     flatlistRef.current.scrollToIndex({
       index: index < 0 ? 0 : index,
     });
 
-    setActiveIndex(index + 2);
-  }, [y]);
+    setTimeout(() => {
+      setActiveIndex(index + 2);
+    }, 10);
+  };
 
   const updateCurrentIndex = (idx) => {
     let newIndex = idx;
-
     if (idx < activeIndex) {
       newIndex = activeIndex - 1;
     } else if (idx > activeIndex) {
       newIndex = activeIndex + 1;
     }
 
-    flatlistRef.current.scrollToIndex({
-      // animated: false,
+    flatlistRef.current?.scrollToIndex({
       index: newIndex - 2 < 0 ? 0 : newIndex - 2,
-      // viewOffset: -56
     });
     // console.log('update idx', idx);
     setActiveIndex(newIndex);
-    onChange(DATA[newIndex]);
+    setSelectedIndex(newIndex);
+    if (activeIndex === newIndex) {
+      onChange(DATA[newIndex]);
+    }
   };
 
   return (
@@ -59,28 +49,13 @@ const Picker = ({onChange}) => {
       <FlatList
         style={styles.list}
         ref={flatlistRef}
-        onMomentumScrollEnd={(e) => {
-          console.log('MOMENT_END');
-          onMomentEnd(e);
-        }}
-        onMomentumScrollBegin={() => {
-          console.log('MOMENT_START');
-        }}
-        scrollEventThrottle={16}
-        onScroll={(e) => {
-          // console.log('ON SCROLL');
-          // const index = Math.floor(y / ITEM_HEIGHT);
-          // setActiveIndex(index);
-        }}
-        onScrollBeginDrag={() => {
-          console.log('START DRAG');
-        }}
-        onScrollEndDrag={onDragEnd}
-        scrollEventThrottle={16}
-        keyExtractor={(item) => item.value}
+        onMomentumScrollEnd={onMomentEnd}
+        // scrollEventThrottle={16}
+        // removeClippedSubviews
+        keyExtractor={(item, index) => item.label}
         data={DATA}
         renderItem={({item, index}) => {
-          const isActive = index === activeIndex;
+          const isActive = index === selectedIndex;
           return (
             <Item
               active={isActive}
@@ -90,6 +65,7 @@ const Picker = ({onChange}) => {
             />
           );
         }}
+        showsVerticalScrollIndicator={false}
       />
       <View style={styles.overlay}>
         <View style={styles.centered} />
@@ -97,19 +73,20 @@ const Picker = ({onChange}) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   root: {
     position: 'absolute',
-    top: 100,
-    right: 25,
-    width: 200,
+    top: 125,
+    right: 0,
+    width: 160,
     height: ITEM_HEIGHT * 5,
     justifyContent: 'center',
     borderColor: '#222',
-    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderRadius: 2,
   },
-  list: {zIndex: 20},
+  list: {zIndex: 1},
   item: {
     height: ITEM_HEIGHT,
     justifyContent: 'center',
@@ -125,8 +102,12 @@ const styles = StyleSheet.create({
   },
   centered: {
     height: ITEM_HEIGHT,
-    backgroundColor: 'red',
-    opacity: 0.3,
+    backgroundColor: '#FFF',
+    opacity: 1,
+    borderTopColor: '#222',
+    borderBottomColor: '#222',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
   },
   text: {
     textAlign: 'center',
@@ -134,5 +115,4 @@ const styles = StyleSheet.create({
     color: '#222',
   },
 });
-
-export default Picker;
+export default AndroidPicker;
