@@ -38,7 +38,7 @@ const AndroidPicker = ({onChange, initialIndex}) => {
     });
     // console.log('update idx', idx);
     setActiveIndex(newIndex);
-    setSelectedIndex(newIndex);
+    // setSelectedIndex(newIndex);
     if (activeIndex === newIndex) {
       onChange(DATA[newIndex]);
     }

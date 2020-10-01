@@ -4,22 +4,22 @@ import {Animated, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 const ITEM_HEIGHT = 45;
 
 const Item = ({active, item, onUpdate, index}) => {
-  const toggle = React.useRef(new Animated.Value(active ? 1 : 0)).current;
+  // const toggle = React.useRef(new Animated.Value(active ? 1 : 0)).current;
 
-  const colorToggle = React.useRef(new Animated.Value(active ? 1 : 0)).current;
+  // const colorToggle = React.useRef(new Animated.Value(active ? 1 : 0)).current;
 
-  React.useEffect(() => {
-    Animated.timing(toggle, {
-      toValue: active ? 1 : 0,
-      useNativeDriver: true,
-      duration: 100,
-    }).start();
-    Animated.timing(colorToggle, {
-      toValue: active ? 1 : 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  }, [active]);
+  // React.useEffect(() => {
+  //   Animated.timing(toggle, {
+  //     toValue: active ? 1 : 0,
+  //     useNativeDriver: true,
+  //     duration: 100,
+  //   }).start();
+  //   Animated.timing(colorToggle, {
+  //     toValue: active ? 1 : 0,
+  //     duration: 100,
+  //     useNativeDriver: false,
+  //   }).start();
+  // }, [active]);
 
   // if (active) {
   //   console.log('ACTIVE', index);
@@ -31,10 +31,11 @@ const Item = ({active, item, onUpdate, index}) => {
           style={{
             transform: [
               {
-                scale: toggle.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 1.3],
-                }),
+                // scale: toggle.interpolate({
+                //   inputRange: [0, 1],
+                //   outputRange: [1, 1.3],
+                // }),
+                scale: active ? 1.3 : 1,
               },
             ],
           }}>
@@ -42,10 +43,11 @@ const Item = ({active, item, onUpdate, index}) => {
             style={[
               styles.text,
               {
-                color: colorToggle.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ['#222', 'blue'],
-                }),
+                color: active ? 'blue' : '#222',
+                // color: colorToggle.interpolate({
+                //   inputRange: [0, 1],
+                //   outputRange: ['#222', 'blue'],
+                // }),
               },
             ]}>
             {item.label.toString()}
